@@ -1,0 +1,13 @@
+launch:
+
+- node:
+    pkg: "gary_the_snail"
+    exec: "arm_disarm_client"
+    name: "arm_disarm_client"
+    namespace: ""
+
+- node:
+    pkg: "gary_the_snail"
+    exec: "movement_publisher"
+    name: "bluerov2_movement"
+    namespace: ""

@@ -1,5 +1,12 @@
 from setuptools import find_packages, setup
 
+import os
+from glob import glob
+
+virtualenv_name = "ardusub"
+home_path = os.path.expanduser("~")
+executable_path = os.path.join(home_path, '.virtualenvs', virtualenv_name, 'bin', 'python')
+
 package_name = 'gary_the_snail'
 
 setup(
@@ -10,6 +17,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,6 +28,13 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'arm_disarm_client = gary_the_snail.bluerov2_arm_disarm:main',
+            'movement_publisher = gary_the_snail.bluerov2_movement:main',
         ],
+    },
+    options={
+        'build_scripts': {
+            'executable': executable_path,
+        }
     },
 )
