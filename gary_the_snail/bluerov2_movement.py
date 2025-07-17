@@ -1,9 +1,11 @@
 import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
-from mavros_msgs.msg import ManualControl    # the Vector3 message type definition
+from mavros_msgs.msg import ManualControl, State    # the Vector3 message type definition
 from time import sleep
 
-LIST_MOVES = [] # each move is a tuple(turn_status, time)
+LIST_MOVES = [] # each move is a tuple(move_type, time)
+TURN_180_TIME = 0 # seconds
+TURN_360_TIME = 0 # seconds
 
 class movement(Node):
     def __init__(self):
@@ -15,11 +17,35 @@ class movement(Node):
             10              # QOS (will be covered later)
         )
 
-        self.play_moves()
+        self.sub = self.create_subscription(
+            State,
+            "/mavros/state",
+            self.state_callback,
+            10
+        )
 
-        self.get_logger().info("initialized publisher node")
+        self.armed = False
 
-    def publish_move(self, turn):
+        self.get_logger().info("initialized movement node")
+
+    def state_callback(self, msg):
+        self.armed = msg.armed
+
+    def publish_move(self, move):
+        """
+        Does a move relative to the AUV
+
+        Options:
+        - up
+        - down
+        - left
+        - right
+        - forward
+        - backward
+        - turn (category)
+            - clock
+            - counter
+        """
         msg = ManualControl()
 
         msg.x = 0.0
@@ -27,22 +53,46 @@ class movement(Node):
         msg.z = 0.0
         msg.r = 0.0
 
-        if turn:
+        if move == "forward":
             msg.x = 70.0
-        else:
+        elif move == "backward":
+            msg.x = -70.0
+        elif move == "left":
+            msg.y = -70.0
+        elif move == "right":
+            msg.y = 70.0
+        elif move == "up":
+            msg.z = 70.0
+        elif move == "down":
+            msg.z = -70.0
+        elif move == "clock":
             msg.r = 70.0
+        elif move == "counter":
+            msg.r = -70.0
+        elif move == "stop":
+            pass
 
         self.pub.publish(msg)
 
     def play_moves(self):
         for move in LIST_MOVES:
-            self.publish_move(move[0], move[1])
+            self.publish_move(move[0])
+            sleep(move[1])
+        
+        self.publish_move("stop")
         
 
 def main(args=None):
     rclpy.init(args=args)
 
     node = movement()
+
+    while not node.armed:
+        sleep(0.1)
+    
+    node.get_logger().info("detected auv armed! starting move sequence!")
+
+    node.play_moves()
 
     try:
         rclpy.spin(node)
