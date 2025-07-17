@@ -30,6 +30,7 @@ setup(
         'console_scripts': [
             'arm_disarm_client = gary_the_snail.bluerov2_arm_disarm:main',
             'movement_publisher = gary_the_snail.bluerov2_movement:main',
+            'depth_hold = gary_the_snail.bluerov2_depth_hold:main',
         ],
     },
     options={
