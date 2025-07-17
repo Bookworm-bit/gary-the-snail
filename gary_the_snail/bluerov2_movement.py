@@ -60,17 +60,17 @@ class movement(Node):
         msg.r = 0.0
 
         if move == "forward":
-            msg.x = 70.0
+            msg.x = 30.0
         elif move == "backward":
-            msg.x = -70.0
+            msg.x = -30.0
         elif move == "left":
-            msg.y = -70.0
+            msg.y = -30.0
         elif move == "right":
-            msg.y = 70.0
+            msg.y = 30.0
         elif move == "up":
-            msg.z = 70.0
+            msg.z = 30.0
         elif move == "down":
-            msg.z = -70.0
+            msg.z = -30.0
         else:
             msg.x = 0.0
             msg.y = 0.0
@@ -95,25 +95,7 @@ class movement(Node):
             msg.z = 0.0
             msg.r = 0.0
 
-            if move[0] == "forward":
-                msg.x = 10.0
-            elif move[0] == "backward":
-                msg.x = -10.0
-            elif move[0] == "left":
-                msg.y = -10.0
-            elif move[0] == "right":
-                msg.y = 10.0
-            elif move[0] == "up":
-                msg.z = 10.0
-            elif move[0] == "down":
-                msg.z = -10.0
-            else:
-                msg.x = 0.0
-                msg.y = 0.0
-                msg.z = 0.0
-                msg.r = 0.0
-
-            self.pub.publish(msg)
+            self.publish_move("stop")
             sleep(0.1)
 
             self.get_logger().info("ended " + move[0])
