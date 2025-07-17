@@ -3,7 +3,7 @@ from rclpy.node import Node    # the ROS 2 Node class
 from mavros_msgs.msg import ManualControl, State    # the Vector3 message type definition
 from time import sleep
 
-LIST_MOVES = [] # each move is a tuple(move_type, time)
+LIST_MOVES = [("forward", 3), ("left", 3)] # each move is a tuple(move_type, time)
 TURN_180_TIME = 0 # seconds
 TURN_360_TIME = 0 # seconds
 
@@ -17,19 +17,19 @@ class movement(Node):
             10              # QOS (will be covered later)
         )
 
-        self.sub = self.create_subscription(
-            State,
-            "/mavros/state",
-            self.state_callback,
-            10
-        )
+        # self.sub = self.create_subscription(
+        #     State,
+        #     "/mavros/state",
+        #     self.state_callback,
+        #     10
+        # )
 
-        self.armed = False
+        # self.armed = False
 
         self.get_logger().info("initialized movement node")
 
-    def state_callback(self, msg):
-        self.armed = msg.armed
+    # def state_callback(self, msg):
+    #     self.armed = msg.armed
 
     def publish_move(self, move):
         """
@@ -76,8 +76,10 @@ class movement(Node):
 
     def play_moves(self):
         for move in LIST_MOVES:
+            self.get_logger().info("started " + move[0])
             self.publish_move(move[0])
             sleep(move[1])
+            self.get_logger().info("ended " + move[0])
         
         self.publish_move("stop")
         
@@ -87,10 +89,10 @@ def main(args=None):
 
     node = movement()
 
-    while not node.armed:
-        sleep(0.1)
+    # while not node.armed:
+    #     sleep(0.1)
     
-    node.get_logger().info("detected auv armed! starting move sequence!")
+    # node.get_logger().info("detected auv armed! starting move sequence!")
 
     node.play_moves()
 

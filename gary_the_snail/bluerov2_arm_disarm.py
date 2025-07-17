@@ -38,8 +38,8 @@ def main(args=None):
     else:
         node.get_logger().warn("arm failed!")
 
-    start = time.time()
-    while (time.time() - start < TIME_TO_MOVE * 1000):
+    start = time()
+    while (time() - start < TIME_TO_MOVE * 1000):
         rclpy.spin_once(node, timeout_sec=0.1)
 
     future = node.send_request(False)
