@@ -81,7 +81,7 @@ class movement(Node):
             
             sleep(move[1])
 
-            self.publish_move(0)
+            self.publish_move("stop")
 
             self.get_logger().info("ended " + move[0])
         
