@@ -96,7 +96,6 @@ class movement(Node):
             msg.r = 0.0
 
             self.publish_move("stop")
-            sleep(0.1)
 
             self.get_logger().info("ended " + move[0])
         
