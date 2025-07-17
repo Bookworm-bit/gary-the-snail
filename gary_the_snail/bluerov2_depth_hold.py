@@ -58,7 +58,7 @@ class depth_hold(Node):
         self.last_error = error
         self.last_time = time()
 
-        self.publish_depth_move(output)
+        self.publish_depth_move(-output)
 
     def publish_depth_move(self, z):
         msg = ManualControl()
