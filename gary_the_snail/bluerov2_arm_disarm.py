@@ -5,7 +5,7 @@ from rclpy.node import Node    # the ROS 2 Node class
 
 from time import time
 
-TIME_TO_MOVE = 60 # seconds
+TIME_TO_MOVE = 67 # seconds
 
 class arm_disarm(Node):
     def __init__(self):
@@ -40,7 +40,10 @@ def main(args=None):
 
     start = time()
     while (time() - start < TIME_TO_MOVE * 1000):
-        rclpy.spin_once(node, timeout_sec=0.1)
+        try:
+            rclpy.spin_once(node, timeout_sec=0.1)
+        except KeyboardInterrupt:
+            break
 
     future = node.send_request(False)
     rclpy.spin_until_future_complete(node, future)
