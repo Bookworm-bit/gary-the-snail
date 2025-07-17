@@ -3,7 +3,7 @@ from rclpy.node import Node    # the ROS 2 Node class
 from mavros_msgs.msg import ManualControl, State    # the Vector3 message type definition
 from time import sleep
 
-LIST_MOVES = [("forward", 3), ("left", 3)] # each move is a tuple(move_type, time)
+LIST_MOVES = [("right", 2), ("counter", 2), ("left", 2), ("clock", 2), ("left", 2), ("counter", 2), ("right", 2), ("clock", 2), ("right", 1), ("left", 1), ("right", 1), ("forward", 1), ("backward", 1), ("forward", 1), ("clock", 2), ("counter", 2), ("down", 1), ("up", 1), ("clock", 2), ("counter", 2), ("down", 1), ("up", 1), ("down", 3), ("up", 1), ("up", 1), ("up", 1), ("counter", 2), ("clock", 2), ("right", 1),("down", 1), ("left", 1), ("right", 1), ("left", 1), ("right", 3), ("left", 2), ("right", 2), ("forward", 3), ("left", 3)] # each move is a tuple(move_type, time)
 TURN_180_TIME = 0 # seconds
 TURN_360_TIME = 0 # seconds
 
