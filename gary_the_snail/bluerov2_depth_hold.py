@@ -38,7 +38,7 @@ class depth_hold(Node):
 
         self.last_time = time()
 
-        self.get_logger().info("initialized subscriber node")
+        self.get_logger().info("initialized depth hold subscriber node")
 
     def calculate_depth(self, pressure):
         return (pressure - ATMOSPHERIC_PRESSURE) / (1000 * GRAVITATIONAL_ACC)
