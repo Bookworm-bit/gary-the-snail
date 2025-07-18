@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int16
-from msg_msgs.msg import ManualControl
+from mavros_msgs.msg import ManualControl
 from time import time
 import numpy as np
 
