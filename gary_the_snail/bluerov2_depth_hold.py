@@ -50,8 +50,9 @@ class depth_hold(Node):
         error = self.target_depth - depth
         
         dt = time() - self.last_time
-        self.integral += dt * error
+        self.integral += max(-20.0, min(20.0, dt*error))
 
+        
         derivative = (error - self.last_error) / dt
         output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
 
