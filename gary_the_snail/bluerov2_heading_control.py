@@ -8,16 +8,16 @@ class heading_control(Node):
     def __init__(self):
         super().__init__("heading_control")
         
-        self.target_heading = 123
+        self.target_heading = 120
 
-        self.Kp = 50.0
+        self.Kp = 20.0
         self.Ki = 0.0
         self.Kd = 0.0
         
         self.integral = 0.0
         self.last_error = 0.0
 
-        self.sub = self.create_subscriber(
+        self.sub = self.create_subscription(
             Int16,
             "/heading",
             self.heading_callback,
@@ -51,6 +51,7 @@ class heading_control(Node):
         self.publish_rotation(output)
     
     def publish_rotation(self, r):
+        r = max(-32768.0, min(32767.0, float(r)))
         msg = ManualControl()
         msg.r = r
 
