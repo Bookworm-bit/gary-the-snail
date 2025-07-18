@@ -3,9 +3,9 @@ from std_srvs.srv import SetBool
 import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
 
-from time import time
+from time import time, sleep
 
-TIME_TO_MOVE = 1000 # seconds
+TIME_TO_MOVE = 100 # seconds
 
 class arm_disarm(Node):
     def __init__(self):
@@ -39,9 +39,10 @@ def main(args=None):
         node.get_logger().warn("arm failed!")
 
     start = time()
-    while (time() - start < TIME_TO_MOVE * 1000):
+    while (time() - start < TIME_TO_MOVE):
+        node.get_logger().info(str(time() - start))
         try:
-            rclpy.spin_once(node, timeout_sec=0.1)
+            sleep(0.1)
         except KeyboardInterrupt:
             break
 
