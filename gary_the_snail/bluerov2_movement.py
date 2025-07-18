@@ -40,6 +40,12 @@ class movement(Node):
         """
         msg = ManualControl()
 
+        if time() - start >= 0.8 * t:
+            pct = 30 * (time() - start) / t
+        elif time() - start >= t:
+            self.move_timer.cancel()
+            return
+
         msg.x = 0.0
         msg.y = 0.0
         msg.z = 0.0
@@ -66,32 +72,20 @@ class movement(Node):
         self.pub.publish(msg)
 
     def time_move(self, move, t):
-        start = time()
+        self.start = time()
 
         self.move_timer = self.create_timer(
             0.1,
             self.publish_move(move, t, pct=30)
         )
 
-        while time() - start < t:
-            if time() - start >= 0.8 * t:
-                self.publish_move(move, pct=30 * (time() - start) / t)
-            else:
-                self.publish_move(move, pct=30.0)
-            sleep(0.1)
-
-
     def play_moves(self):
-        self.publish_move("stop")
-
         for move in self.LIST_MOVES:
             self.get_logger().info("started " + move[0])
 
             self.time_move(move[0], move[1])
             self.time_move("stop", 1.0)
             self.get_logger().info("ended " + move[0])
-        
-        self.publish_move("stop")
         
         self.get_logger().info("stopped dance")
 
