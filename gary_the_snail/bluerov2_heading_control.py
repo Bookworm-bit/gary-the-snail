@@ -17,7 +17,7 @@ class heading_control(Node):
         self.integral = 0.0
         self.last_error = 0.0
 
-        self.sub = self.create_subscriber(
+        self.sub = self.create_subscription(
             Int16,
             "/heading",
             self.heading_callback,
