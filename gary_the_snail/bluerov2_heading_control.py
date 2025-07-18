@@ -10,9 +10,9 @@ class heading_control(Node):
         
         self.target_heading = 120
 
-        self.Kp = 20.0
-        self.Ki = 0.0
-        self.Kd = 0.0
+        self.Kp = 6.0
+        self.Ki = 0.3
+        self.Kd = 0.075
         
         self.integral = 0.0
         self.last_error = 0.0
@@ -40,7 +40,7 @@ class heading_control(Node):
         error = self.target_heading - heading
         
         dt = time() - self.last_time
-        self.integral += dt * error
+        self.integral += max(-20.0, min(20.0, dt*error))
 
         derivative = (error - self.last_error) / dt
         output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
