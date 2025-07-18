@@ -3,7 +3,6 @@ from rclpy.node import Node
 from std_msgs.msg import Int16
 from mavros_msgs.msg import ManualControl
 from time import time
-import numpy as np
 
 class heading_control(Node):
     def __init__(self):
