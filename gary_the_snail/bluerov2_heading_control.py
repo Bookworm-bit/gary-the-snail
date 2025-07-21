@@ -4,6 +4,8 @@ from std_msgs.msg import Int16
 from mavros_msgs.msg import ManualControl
 from time import time
 
+import numpy as np
+
 class heading_control(Node):
     def __init__(self):
         super().__init__("heading_control")
@@ -47,8 +49,12 @@ class heading_control(Node):
         heading = msg.data
         self.get_logger().info(f"heading: {heading}")
 
+        # SAW TOOTH
         if heading > 180.0:
             heading = heading - 360
+
+        # ARCTAN
+        # heading = np.arctan(heading)
 
         error = self.target_heading - heading
         
