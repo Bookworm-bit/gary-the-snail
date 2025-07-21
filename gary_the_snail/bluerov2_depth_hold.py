@@ -2,6 +2,7 @@ import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
 from sensor_msgs.msg import FluidPressure    # the Vector3 message type definition
 from mavros_msgs.msg import ManualControl
+from std_msgs.msg import Int16
 
 import numpy as np
 from time import time
@@ -13,7 +14,7 @@ class depth_hold(Node):
     def __init__(self):
         super().__init__("depth_hold")    # names the node when running
         
-        self.target_depth = 5.0
+        self.target_depth = 1.0
 
         self.Kp = 70.0
         self.Ki = 0.0
@@ -36,9 +37,19 @@ class depth_hold(Node):
             10              # QOS (will be covered later)
         )
 
+        self.sub_target = self.create_subscription(
+            Int16,
+            "/target_depth",
+            self.get_target_depth,
+            10
+        )
+
         self.last_time = time()
 
         self.get_logger().info("initialized depth hold subscriber node")
+
+    def get_target_depth(self, msg):
+        self.target_depth = msg.data
 
     def calculate_depth(self, pressure):
         return (pressure - ATMOSPHERIC_PRESSURE) / (1000 * GRAVITATIONAL_ACC)
