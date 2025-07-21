@@ -1,35 +1,21 @@
 import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
-from sensor_msgs.msg import FluidPressure    # the Vector3 message type definition
 from mavros_msgs.msg import ManualControl
-from std_msgs.msg import Int16
+from std_msgs.msg import Int16, Float32
 
 import numpy as np
 from time import time
-
-ATMOSPHERIC_PRESSURE = 101325
-GRAVITATIONAL_ACC = 9.81
 
 class depth_hold(Node):
     def __init__(self):
         super().__init__("depth_hold")    # names the node when running
         
-        self.target_depth = 1.0
-
         self.Kp = 70.0
         self.Ki = 0.0
         self.Kd = 0.0
 
         self.integral = 0.0
         self.last_error = 0.0
-        
-
-        self.sub = self.create_subscription(
-            FluidPressure,        # the message type
-            "/pressure",    # the topic name,
-            self.depth_callback,  # the subscription's callback method
-            10              # QOS (will be covered later)
-        )
 
         self.pub = self.create_publisher(
             ManualControl,        # the message type
@@ -44,21 +30,23 @@ class depth_hold(Node):
             10
         )
 
+        self.sub_depth = self.create_subscription(
+            Float32, 
+            "/depth", 
+            self.get_depth,
+            1010
+        )
+
+        self.depth = 0.0
+
         self.last_time = time()
 
         self.get_logger().info("initialized depth hold subscriber node")
 
-    def get_target_depth(self, msg):
-        self.target_depth = msg.data
+    def get_depth(self, msg):
+        self.depth = msg.data
 
-    def calculate_depth(self, pressure):
-        return (pressure - ATMOSPHERIC_PRESSURE) / (1000 * GRAVITATIONAL_ACC)
-
-    def depth_callback(self, msg):
-        depth = self.calculate_depth(msg.fluid_pressure)
-        self.get_logger().info(f"depth: {depth}")
-
-        error = self.target_depth - depth
+        error = self.target_depth - self.depth
         
         dt = time() - self.last_time
         self.integral += max(-20.0, min(20.0, dt*error))
@@ -71,6 +59,9 @@ class depth_hold(Node):
         self.last_time = time()
 
         self.publish_depth_move(-output)
+
+    def get_target_depth(self, msg):
+        self.target_depth = msg.data
 
     def publish_depth_move(self, z):
         msg = ManualControl()

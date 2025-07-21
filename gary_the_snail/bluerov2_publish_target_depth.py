@@ -27,10 +27,10 @@ def main(args=None):
 
     try:
         while True:
-            val = input("enter target depth (int): ")
+            val = input("enter target depth (float): ")
 
             try:
-                val = int(val)
+                val = float(val)
             except TypeError:
                 node.get_logger().warn("invalid input!")
 
