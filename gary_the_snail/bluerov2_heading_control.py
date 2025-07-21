@@ -8,7 +8,7 @@ class heading_control(Node):
     def __init__(self):
         super().__init__("heading_control")
         
-        self.target_heading = 120
+        self.target_heading = 0
 
         self.Kp = 6.0
         self.Ki = 0.3

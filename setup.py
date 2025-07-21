@@ -33,6 +33,7 @@ setup(
             'depth_hold = gary_the_snail.bluerov2_depth_hold:main',
             'heading_control = gary_the_snail.bluerov2_heading_control:main',
             'target_depth = gary_the_snail.bluerov2_publish_target_depth:main',
+            'target_heading = gary_the_snail.bluerov2_publish_target_heading:main',
             'depth_publisher = gary_the_snail.bluerov2_depth_publisher:main',
         ],
     },

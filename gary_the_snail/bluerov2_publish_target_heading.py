@@ -35,7 +35,7 @@ def main(args=None):
             except TypeError:
                 node.get_logger().warn("invalid input!")
 
-            node.publish_target_depth(val)
+            node.publish_target_heading(val)
     except KeyboardInterrupt:
         print("\nKeyboardInterrupt received, shutting down...")
     finally:
