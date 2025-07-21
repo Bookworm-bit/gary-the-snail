@@ -11,8 +11,8 @@ class depth_hold(Node):
         super().__init__("depth_hold")    # names the node when running
         
         self.Kp = 70.0
-        self.Ki = 0.0
-        self.Kd = 0.0
+        self.Ki = 3.0
+        self.Kd = 15.0
 
         self.integral = 0.0
         self.last_error = 0.0
@@ -25,7 +25,7 @@ class depth_hold(Node):
         )
 
         self.sub_target = self.create_subscription(
-            Int16,
+            Float32,
             "/target_depth",
             self.get_target_depth,
             10
