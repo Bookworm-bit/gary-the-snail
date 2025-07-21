@@ -5,7 +5,7 @@ from rclpy.node import Node    # the ROS 2 Node class
 
 from time import time, sleep
 
-TIME_TO_MOVE = 100 # seconds
+TIME_TO_MOVE = 300 # seconds
 
 class arm_disarm(Node):
     def __init__(self):

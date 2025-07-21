@@ -24,8 +24,12 @@ class pressure_converter(Node):
             10
         )
 
-    def depth_callback(self, pressure):
-        self.pub.publish(pressure - ATMOSPHERIC_PRESSURE) / (WATER_DENSITY * GRAVITATIONAL_ACC)
+        self.get_logger().info("created depth publisher node")
+
+    def depth_callback(self, msg):
+        depth_msg = Float32()
+        depth_msg.data = (msg.fluid_pressure - ATMOSPHERIC_PRESSURE) / (WATER_DENSITY * GRAVITATIONAL_ACC)
+        self.pub.publish(depth_msg)
 
 def main(args=None):
     rclpy.init(args=args)

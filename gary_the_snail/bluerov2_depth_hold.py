@@ -16,6 +16,7 @@ class depth_hold(Node):
 
         self.integral = 0.0
         self.last_error = 0.0
+        self.target_depth = 1.0
 
         self.pub = self.create_publisher(
             ManualControl,        # the message type
@@ -34,7 +35,7 @@ class depth_hold(Node):
             Float32, 
             "/depth", 
             self.get_depth,
-            1010
+            10
         )
 
         self.depth = 0.0
@@ -47,10 +48,10 @@ class depth_hold(Node):
         self.depth = msg.data
 
         error = self.target_depth - self.depth
+        self.get_logger().info("error: " + str(error))
         
         dt = time() - self.last_time
         self.integral += max(-20.0, min(20.0, dt*error))
-
         
         derivative = (error - self.last_error) / dt
         output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
