@@ -1,13 +1,13 @@
 import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
-from std_msgs.msg import Int16
+from std_msgs.msg import Float32
 
 class target_depth_publisher(Node):
     def __init__(self):
         super().__init__("tutorial_publisher")    # names the node when running
 
         self.pub = self.create_publisher(
-            Int16,        # the message type
+            Float32,        # the message type
             "/target_depth",    # the topic name
             10              # QOS (will be covered later)
         )
@@ -15,7 +15,7 @@ class target_depth_publisher(Node):
         self.get_logger().info("initialized publisher node")
 
     def publish_target_depth(self, data):
-        msg = Int16()
+        msg = Float32()
 
         msg.data = data
 
