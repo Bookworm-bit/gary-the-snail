@@ -29,9 +29,19 @@ class heading_control(Node):
             "/manual_control",
             10
         )
+
+        self.sub_target = self.create_subscription(
+            Int16,
+            "/target_heading",
+            self.get_target_heading,
+            10
+        )
         
         self.last_time = time()
         self.get_logger().info("initialized heading control subscriber node")
+
+    def get_target_heading(self, msg):
+        self.target_heading = msg.data
 
     def heading_callback(self, msg):
         heading = msg.data

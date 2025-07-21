@@ -32,6 +32,7 @@ setup(
             'movement_publisher = gary_the_snail.bluerov2_movement:main',
             'depth_hold = gary_the_snail.bluerov2_depth_hold:main',
             'heading_control = gary_the_snail.bluerov2_heading_control:main',
+            'target_depth = gary_the_snail.bluerov2_publish_target_depth:main',
         ],
     },
     options={
