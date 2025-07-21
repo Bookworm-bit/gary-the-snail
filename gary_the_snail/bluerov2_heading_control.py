@@ -37,6 +37,9 @@ class heading_control(Node):
         heading = msg.data
         self.get_logger().info(f"heading: {heading}")
 
+        if heading > 180.0:
+            heading = heading - 360
+
         error = self.target_heading - heading
         
         dt = time() - self.last_time
