@@ -64,7 +64,7 @@ class heading_control(Node):
         self.publish_rotation(output)
     
     def publish_rotation(self, r):
-        r = max(-32768.0, min(32767.0, float(r)))
+        r = max(-32767.0, min(32766.0, float(r)))
         msg = ManualControl()
         msg.r = r
 
