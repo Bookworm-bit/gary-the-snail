@@ -1,10 +1,7 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int16
-from mavros_msgs.msg import ManualControl
+from std_msgs.msg import Int16, Float32
 from time import time
-
-import numpy as np
 
 class heading_control(Node):
     def __init__(self):
@@ -27,8 +24,8 @@ class heading_control(Node):
         )
 
         self.pub = self.create_publisher(
-            ManualControl,
-            "/manual_control",
+            Float32,
+            "/heading_control",
             10
         )
 
@@ -70,9 +67,10 @@ class heading_control(Node):
         self.publish_rotation(output)
     
     def publish_rotation(self, r):
+        msg = Float32()
+
         r = max(-32767.0, min(32766.0, float(r)))
-        msg = ManualControl()
-        msg.r = r
+        msg.data = r
 
         self.pub.publish(msg)
 

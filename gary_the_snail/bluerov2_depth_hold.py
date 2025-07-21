@@ -1,9 +1,7 @@
 import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
-from mavros_msgs.msg import ManualControl
-from std_msgs.msg import Int16, Float32
+from std_msgs.msg import Float32
 
-import numpy as np
 from time import time
 
 class depth_hold(Node):
@@ -19,8 +17,8 @@ class depth_hold(Node):
         self.target_depth = 1.0
 
         self.pub = self.create_publisher(
-            ManualControl,        # the message type
-            "/manual_control",    # the topic name
+            Float32,        # the message type
+            "/depth_control",    # the topic name
             10              # QOS (will be covered later)
         )
 
@@ -65,10 +63,10 @@ class depth_hold(Node):
         self.target_depth = msg.data
 
     def publish_depth_move(self, z):
-        msg = ManualControl()
+        msg = Float32()
 
         z = max(-32767.0, min(32766.0, float(z)))
-        msg.z = z
+        msg.data = z
 
         self.pub.publish(msg)
 
