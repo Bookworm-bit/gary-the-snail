@@ -48,7 +48,7 @@ class depth_hold(Node):
         self.depth = msg.data
 
         error = self.target_depth - self.depth
-        self.get_logger().info("error: " + str(error))
+        self.get_logger().info("depth: " + str(self.depth))
         
         dt = time() - self.last_time
         self.integral += max(-20.0, min(20.0, dt*error))
@@ -67,6 +67,7 @@ class depth_hold(Node):
     def publish_depth_move(self, z):
         msg = ManualControl()
 
+        z = max(-32767.0, min(32766.0, float(z)))
         msg.z = z
 
         self.pub.publish(msg)

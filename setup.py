@@ -29,12 +29,12 @@ setup(
     entry_points={
         'console_scripts': [
             'arm_disarm_client = gary_the_snail.bluerov2_arm_disarm:main',
-            'movement_publisher = gary_the_snail.bluerov2_movement:main',
             'depth_hold = gary_the_snail.bluerov2_depth_hold:main',
+            'depth_publisher = gary_the_snail.bluerov2_depth_publisher:main',
             'heading_control = gary_the_snail.bluerov2_heading_control:main',
             'target_depth = gary_the_snail.bluerov2_publish_target_depth:main',
             'target_heading = gary_the_snail.bluerov2_publish_target_heading:main',
-            'depth_publisher = gary_the_snail.bluerov2_depth_publisher:main',
+            'movement_publisher = gary_the_snail.bluerov2_movement:main',
         ],
     },
     options={
