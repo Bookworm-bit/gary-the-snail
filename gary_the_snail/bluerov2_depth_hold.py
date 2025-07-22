@@ -1,24 +1,26 @@
 import rclpy    # the ROS 2 client library for Python
 from rclpy.node import Node    # the ROS 2 Node class
-from std_msgs.msg import Float32
+from mavros_msgs.msg import ManualControl
+from std_msgs.msg import Int16, Float32
 
+import numpy as np
 from time import time
 
 class depth_hold(Node):
     def __init__(self):
         super().__init__("depth_hold")    # names the node when running
         
-        self.Kp = 70.0
+        self.Kp = 60.0
         self.Ki = 3.0
         self.Kd = 15.0
 
         self.integral = 0.0
-        self.last_error = 0.0
+        self.last_depth = 0.0
         self.target_depth = 1.0
 
         self.pub = self.create_publisher(
-            Float32,        # the message type
-            "/depth_control",    # the topic name
+            ManualControl,        # the message type
+            "/manual_control",    # the topic name
             10              # QOS (will be covered later)
         )
 
@@ -36,6 +38,12 @@ class depth_hold(Node):
             10
         )
 
+        self.pub = self.create_publisher(
+            Float32,        # the message type
+            "/depth_control",    # the topic name
+            10              # QOS (will be covered later)
+        )
+
         self.depth = 0.0
 
         self.last_time = time()
@@ -46,15 +54,15 @@ class depth_hold(Node):
         self.depth = msg.data
 
         error = self.target_depth - self.depth
-        self.get_logger().info("depth: " + str(self.depth))
+        self.get_logger().info("error: " + str(error))
         
         dt = time() - self.last_time
         self.integral += max(-20.0, min(20.0, dt*error))
         
-        derivative = (error - self.last_error) / dt
+        derivative = (self.depth - self.last_depth) / dt
         output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
 
-        self.last_error = error
+        self.last_depth = self.depth
         self.last_time = time()
 
         self.publish_depth_move(-output)

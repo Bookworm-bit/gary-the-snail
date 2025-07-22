@@ -32,10 +32,10 @@ class control(Node):
             self.publish_manual_control    # callback function
         )
 
-        self.x = 0
-        self.y = 0
-        self.z = 0
-        self.r = 0
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+        self.r = 0.0
 
         self.get_logger().info("initialized control node")
 
@@ -52,6 +52,8 @@ class control(Node):
         msg.y = self.y
         msg.z = self.z
         msg.r = self.r
+
+        self.pub.publish(msg)
 
 def main(args=None):
     rclpy.init(args=args)

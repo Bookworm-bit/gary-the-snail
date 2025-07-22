@@ -1,7 +1,9 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int16, Float32
+from mavros_msgs.msg import ManualControl
 from time import time
+import numpy as np
 
 class heading_control(Node):
     def __init__(self):
@@ -9,12 +11,13 @@ class heading_control(Node):
         
         self.target_heading = 0
 
-        self.Kp = 6.0
+        self.Kp = 3.0
         self.Ki = 0.3
         self.Kd = 0.075
         
         self.integral = 0.0
         self.last_error = 0.0
+        self.first_run = True
 
         self.sub = self.create_subscription(
             Int16,
@@ -24,8 +27,8 @@ class heading_control(Node):
         )
 
         self.pub = self.create_publisher(
-            Float32,
-            "/heading_control",
+            ManualControl,
+            "/manual_control",
             10
         )
 
@@ -35,6 +38,12 @@ class heading_control(Node):
             self.get_target_heading,
             10
         )
+
+        self.pub = self.create_publisher(
+            Float32,
+            "/heading_control",
+            10
+        )
         
         self.last_time = time()
         self.get_logger().info("initialized heading control subscriber node")
@@ -42,27 +51,39 @@ class heading_control(Node):
     def get_target_heading(self, msg):
         self.target_heading = msg.data
 
+    def normalize_angle(self, angle):
+        while angle > 180:
+            angle -= 360
+        while angle < -180:
+            angle += 360
+        return angle
+
     def heading_callback(self, msg):
+        current_time = time()
+        dt = current_time - self.last_time
+            
         heading = msg.data
         self.get_logger().info(f"heading: {heading}")
 
-        # SAW TOOTH
-        if heading > 180.0:
-            heading = heading - 360
+        heading = self.normalize_angle(heading)
+        target_heading = self.normalize_angle(self.target_heading)
 
-        # ARCTAN
-        # heading = np.arctan(heading)
-
-        error = self.target_heading - heading
+        error = target_heading - heading
+        error = self.normalize_angle(error)
         
-        dt = time() - self.last_time
-        self.integral += max(-20.0, min(20.0, dt*error))
+        self.integral += error * dt
+        self.integral = max(-20.0, min(20.0, self.integral))
 
-        derivative = (error - self.last_error) / dt
+        if self.first_run:
+            derivative = 0.0
+            self.first_run = False
+        else:
+            derivative = (error - self.last_error) / dt
+
         output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
 
         self.last_error = error
-        self.last_time = time()
+        self.last_time = current_time
 
         self.publish_rotation(output)
     
