@@ -11,9 +11,9 @@ class heading_control(Node):
         
         self.target_heading = 0
 
-        self.Kp = 3.0
-        self.Ki = 0.3
-        self.Kd = 0.075
+        self.Kp = 0.70
+        self.Ki = 0.20
+        self.Kd = 0.20
         
         self.integral = 0.0
         self.last_error = 0.0
@@ -90,7 +90,7 @@ class heading_control(Node):
     def publish_rotation(self, r):
         msg = Float32()
 
-        r = max(-32767.0, min(32766.0, float(r)))
+        r = max(-100.0, min(100.0, float(r)))
         msg.data = r
 
         self.pub.publish(msg)

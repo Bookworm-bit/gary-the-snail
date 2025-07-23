@@ -27,6 +27,13 @@ class control(Node):
             10              # QOS (will be covered later)
         )
 
+        self.sub_speed = self.create_subscription(
+            Float32,
+            "/target_speed",
+            self.speed_control_callback,
+            10
+        )
+
         self.timer = self.create_timer(
             1.0,    # timer period (sec)
             self.publish_manual_control    # callback function
@@ -44,6 +51,9 @@ class control(Node):
 
     def heading_control_callback(self, msg):
         self.r = msg.data
+
+    def speed_control_callback(self, msg):
+        self.x = msg.data
 
     def publish_manual_control(self):
         msg = ManualControl()

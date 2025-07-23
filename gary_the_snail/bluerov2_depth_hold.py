@@ -11,18 +11,12 @@ class depth_hold(Node):
         super().__init__("depth_hold")    # names the node when running
         
         self.Kp = 60.0
-        self.Ki = 3.0
-        self.Kd = 15.0
+        self.Ki = 8.0
+        self.Kd = 50.0
 
         self.integral = 0.0
-        self.last_depth = 0.0
+        self.last_error = 0.0
         self.target_depth = 1.0
-
-        self.pub = self.create_publisher(
-            ManualControl,        # the message type
-            "/manual_control",    # the topic name
-            10              # QOS (will be covered later)
-        )
 
         self.sub_target = self.create_subscription(
             Float32,
@@ -54,15 +48,15 @@ class depth_hold(Node):
         self.depth = msg.data
 
         error = self.target_depth - self.depth
-        self.get_logger().info("error: " + str(error))
+        self.get_logger().info("depth: " + str(self.depth))
         
         dt = time() - self.last_time
         self.integral += max(-20.0, min(20.0, dt*error))
         
-        derivative = (self.depth - self.last_depth) / dt
+        derivative = (error - self.last_error) / dt
         output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
 
-        self.last_depth = self.depth
+        self.last_error = error
         self.last_time = time()
 
         self.publish_depth_move(-output)
@@ -73,7 +67,7 @@ class depth_hold(Node):
     def publish_depth_move(self, z):
         msg = Float32()
 
-        z = max(-32767.0, min(32766.0, float(z)))
+        z = max(-100.0, min(100.0, float(z)))
         msg.data = z
 
         self.pub.publish(msg)
