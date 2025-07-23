@@ -1,6 +1,12 @@
 launch:
 
 - node:
+    pkg: "rosmav"
+    exec: "bluerov2_hardware_interface"
+    name: "bluerov2_hardware_interface"
+    namespace: ""
+
+- node:
     pkg: "gary_the_snail"
     exec: "arm_disarm_client"
     name: "bluerov2_arm_disarm"
@@ -34,7 +40,7 @@ launch:
 #     pkg: "gary_the_snail"
 #     exec: "target_depth"
 #     name: "bluerov2_publish_target_depth"
-#     namespace: ""
+#       namespace: ""
 
 # - node:
 #     pkg: "gary_the_snail"
