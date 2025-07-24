@@ -39,6 +39,13 @@ class heading_control(Node):
             10
         )
 
+        self.sub_relative = self.create_subscription(
+            Int16,
+            "/relative_heading",
+            self.get_relative_target,
+            10
+        )
+
         self.pub = self.create_publisher(
             Float32,
             "/heading_control",
@@ -50,6 +57,9 @@ class heading_control(Node):
 
     def get_target_heading(self, msg):
         self.target_heading = msg.data
+    
+    def get_relative_target(self, msg):
+        self.target_heading = self.target_heading + msg.data
 
     def normalize_angle(self, angle):
         while angle > 180:

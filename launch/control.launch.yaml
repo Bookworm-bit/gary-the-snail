@@ -7,6 +7,12 @@ launch:
     namespace: ""
 
 - node:
+    pkg: "rosmav"
+    exec: "bluerov2_camera_interface"
+    name: "bluerov2_camera_interface"
+    namespace: ""
+
+- node:
     pkg: "gary_the_snail"
     exec: "arm_disarm_client"
     name: "bluerov2_arm_disarm"
