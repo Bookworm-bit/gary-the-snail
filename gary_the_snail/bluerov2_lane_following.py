@@ -8,6 +8,7 @@ from std_msgs.msg import Int16, Float32
 from sensor_msgs.msg import Image
 
 import numpy as np
+from time import time
 
 class lane_following(Node):
     def __init__(self):
@@ -31,6 +32,13 @@ class lane_following(Node):
             self.camera_callback,
             10
         )
+
+        self.Kp = 60.0
+        self.Ki = 8.0
+        self.Kd = 50.0
+
+        self.integral = 0.0
+        self.last_error = 0.0
         
     def camera_callback(self, msg):
         img = np.array(msg.data)
@@ -49,9 +57,29 @@ class lane_following(Node):
 
         msg = Int16()
         if recommended == "counter":
-            msg.data = -20.0
+            msg.data = -20
         elif recommended == "clock":
-            msg.data = 20.0
+            msg.data = 20
         self.pub_relative_heading.publish(msg)
 
-    
+        error = self.IMAGE_WIDTH // 2 - intercept
+
+        if error < 25:
+            msg = Int16()
+
+            angle_line = np.arctan(slope)
+            relative_angle = 90 - angle_line
+
+            msg.data = int(relative_angle)
+            self.pub_relative_heading(msg)
+        else:
+            dt = time() - self.last_time
+            self.integral += max(-20.0, min(20.0, dt*error))
+            
+            derivative = (error - self.last_error) / dt
+            output = error * self.Kp + self.integral * self.Ki + derivative * self.Kd
+
+            self.last_error = error
+            self.last_time = time()
+
+            self.publish_lateral(output)
