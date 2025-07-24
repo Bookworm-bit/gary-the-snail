@@ -36,6 +36,7 @@ setup(
             'target_heading = gary_the_snail.bluerov2_publish_target_heading:main',
             'movement_publisher = gary_the_snail.bluerov2_movement:main',
             'control = gary_the_snail.bluerov2_control:main',
+            'lane_follow = gary_the_snail.bluerov2_lane_following:main',
         ],
     },
     options={

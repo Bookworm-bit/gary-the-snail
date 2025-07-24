@@ -15,7 +15,7 @@ class lane_following(Node):
         super().__init__("lane_following")
 
         self.pub_lateral = self.create_publisher(
-            Int16,
+            Float32,
             "/lane_following",
             10
         )
@@ -82,4 +82,7 @@ class lane_following(Node):
             self.last_error = error
             self.last_time = time()
 
-            self.publish_lateral(output)
+            msg = Float32()
+            msg.data = output
+
+            self.publish_lateral(msg)
