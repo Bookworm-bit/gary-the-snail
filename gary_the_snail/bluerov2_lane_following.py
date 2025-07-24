@@ -52,8 +52,8 @@ class lane_following(Node):
         lines = lane_detection.detect_lines(img, threshold1=20, threshold2=60, aperture_size=3, minLineLength=25, maxLineGap=25)
         lanes = lane_detection.detect_lanes(lines)
 
-        intercept, slope = lane_following.get_lane_center(lanes)
-        recommended = lane_following.recommend_direction(intercept, slope)
+        intercept, slope = lane_following.get_lane_center(img, lanes)
+        recommended = lane_following.recommend_direction(img, intercept, slope)
 
         msg = Int16()
         if recommended == "counter":
@@ -68,7 +68,7 @@ class lane_following(Node):
             msg = Int16()
 
             angle_line = np.arctan(slope)
-            relative_angle = 90 - angle_line
+            relative_angle = np.pi / 2 - angle_line
 
             msg.data = int(relative_angle)
             self.pub_relative_heading(msg)

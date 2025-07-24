@@ -2,19 +2,10 @@ import cv2
 import numpy as np
 import random
 
-IMAGE_HEIGHT: int
-IMAGE_WIDTH: int
-
 def crop_half(img):
-    return img[IMAGE_HEIGHT//2:, :]
+    return img[img.shape[0]//2:, :] 
 
 def detect_lines(img, threshold1=50, threshold2=150, aperture_size=3, minLineLength=100, maxLineGap=10):
-    global IMAGE_HEIGHT
-    global IMAGE_WIDTH
-
-    IMAGE_HEIGHT = img.shape[0]
-    IMAGE_WIDTH = img.shape[1]
-    
     grayscale_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(grayscale_img, threshold1, threshold2, apertureSize=aperture_size)
 
@@ -57,7 +48,7 @@ def get_slopes_intercepts(lines):
 
         slopes.append((y2 - y1) / (x2 - x1))
 
-        intercepts.append((IMAGE_HEIGHT - y1) / slopes[-1] + x1)
+        intercepts.append((-y1) / slopes[-1] + x1)
 
     return (slopes, intercepts)
 
@@ -76,10 +67,10 @@ def detect_lanes(lines):
             if seen[j]:
                 continue
 
-            int_sim = abs(intercepts[i] - intercepts[j]) <= 50
+            int_sim = abs(intercepts[i] - intercepts[j]) <= 25
             ang_sim = abs(np.arctan(slopes[i]) - np.arctan(slopes[j])) <= 0.05
 
-            if int_sim or ang_sim:
+            if int_sim and ang_sim:
                 seen[j] = True
         
         filtered_lines.add(i)
@@ -96,7 +87,7 @@ def detect_lanes(lines):
             angle1 = np.arctan(slopes[filtered_lines[i]])
             angle2 = np.arctan(slopes[filtered_lines[j]])
 
-            ang_sim = abs(angle1 - angle2) <= 0.4
+            ang_sim = abs(angle1 - angle2) <= 0.2
 
             if ang_sim:
                 lanes.append([lines[filtered_lines[i]], lines[filtered_lines[j]]])
@@ -108,9 +99,9 @@ def draw_lanes(img, lanes):
         color = (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
 
         x1, y1, x2, y2 = lane[0][0]
-        cv2.line(img, (x1, y1), (x2, y2), color, 20)
+        cv2.line(img, (x1, y1), (x2, y2), color, 10)
 
         x1, y1, x2, y2 = lane[1][0]
-        cv2.line(img, (x1, y1), (x2, y2), color, 20)
+        cv2.line(img, (x1, y1), (x2, y2), color, 10)
     
     return img

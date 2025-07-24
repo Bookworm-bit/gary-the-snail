@@ -1,7 +1,11 @@
-from lane_detection import get_slopes_intercepts, IMAGE_WIDTH, IMAGE_HEIGHT
+from lane_detection import detect_lines, draw_lines, get_slopes_intercepts, detect_lanes, draw_lanes
+
+import cv2
 import numpy as np
 
-def get_lane_center(lanes):
+def get_lane_center(img, lanes):
+    IMAGE_WIDTH = img.shape[0]
+
     center_intercept = 0
     center_slope = 0
     min_dist_center = IMAGE_WIDTH
@@ -19,7 +23,7 @@ def get_lane_center(lanes):
     
     return (center_intercept, center_slope)
 
-def recommend_direction(center, slope):
+def recommend_direction(img, center, slope):
     """
     Params
     - Center line intercept
@@ -28,6 +32,8 @@ def recommend_direction(center, slope):
     Ret
     - Direction to move to, left, right, forward
     """
+
+    IMAGE_WIDTH = img.shape[0]
 
     direction = None
 
