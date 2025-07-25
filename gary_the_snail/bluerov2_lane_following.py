@@ -35,9 +35,9 @@ class lane_following(Node):
             10
         )
 
-        self.Kp = 60.0
-        self.Ki = 8.0
-        self.Kd = 50.0
+        self.Kp = 20.0
+        self.Ki = 0.0
+        self.Kd = 0.0
 
         self.integral = 0.0
         self.last_error = 0.0
