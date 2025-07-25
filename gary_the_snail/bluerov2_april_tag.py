@@ -24,7 +24,7 @@ class april_tag_detector(Node):
         img = bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
         
         img = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-        at_detector = Detector(families='tag36h11', #change later after we know what the families are
+        at_detector = Detector(families='tag36h11', 
                             nthreads=1,
                             quad_decimate=1.0,
                             quad_sigma=0.0,
@@ -32,3 +32,5 @@ class april_tag_detector(Node):
                             decode_sharpening=0.25,
                             debug=0)
         tags = at_detector.detect(img, estimate_tag_pose=False, camera_params=None, tag_size=None)
+
+        for tag in tags: 
