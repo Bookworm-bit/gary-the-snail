@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image
 
 class image_saver(Node):
     def __init__(self):
-        super().__init__("image saver")
+        super().__init__("image_saver")
 
         self.num = 0
 
@@ -20,12 +20,13 @@ class image_saver(Node):
         )
 
     def image_callback(self, msg):
+        self.get_logger().info(f"image saved {self.num}")
         self.num += 1
 
         img = msg.data
         img = CvBridge.imgmsg_to_cv2(img)
 
-        cv2.imwrite(f"/images/image_{self.num}.png", img)
+        cv2.imwrite(f"image_{self.num}.png", img)
 
 def main(args=None):
     rclpy.init(args=args)

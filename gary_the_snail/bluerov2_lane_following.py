@@ -10,14 +10,12 @@ from sensor_msgs.msg import Image
 import numpy as np
 from time import time
 
-from cv_bridge import CvBridge
-
 class lane_following(Node):
     def __init__(self):
         super().__init__("lane_following")
 
         self.pub_lateral = self.create_publisher(
-            Float32,
+            Int16,
             "/lane_following",
             10
         )
@@ -35,16 +33,15 @@ class lane_following(Node):
             10
         )
 
-        self.Kp = 20.0
-        self.Ki = 0.0
-        self.Kd = 0.0
+        self.Kp = 60.0
+        self.Ki = 8.0
+        self.Kd = 50.0
 
         self.integral = 0.0
         self.last_error = 0.0
         
     def camera_callback(self, msg):
-        bridge = CvBridge()
-        img = bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        img = np.array(msg.data)
         img = lane_detection.crop_half(img)
         self.IMAGE_WIDTH = msg.width
         self.IMAGE_HEIGHT = msg.height
@@ -85,20 +82,4 @@ class lane_following(Node):
             self.last_error = error
             self.last_time = time()
 
-            msg = Float32()
-            msg.data = output
-
-            self.publish_lateral(msg)
-
-def main(args=None):
-    rclpy.init(args=args)
-    node = lane_following()    
-
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        print("\nKeyboardInterrupt received, shutting down...")
-    finally:
-        node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+            self.publish_lateral(output)
