@@ -89,3 +89,16 @@ class lane_following(Node):
             msg.data = output
 
             self.publish_lateral(msg)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = lane_following()    
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        print("\nKeyboardInterrupt received, shutting down...")
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()

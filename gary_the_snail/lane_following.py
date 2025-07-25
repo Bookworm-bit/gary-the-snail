@@ -1,4 +1,4 @@
-from lane_detection import detect_lines, draw_lines, get_slopes_intercepts, detect_lanes, draw_lanes
+from gary_the_snail.lane_detection import detect_lines, draw_lines, get_slopes_intercepts, detect_lanes, draw_lanes
 
 import cv2
 import numpy as np
