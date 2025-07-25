@@ -10,6 +10,8 @@ from sensor_msgs.msg import Image
 import numpy as np
 from time import time
 
+from cv_bridge import CvBridge
+
 class lane_following(Node):
     def __init__(self):
         super().__init__("lane_following")
@@ -41,7 +43,8 @@ class lane_following(Node):
         self.last_error = 0.0
         
     def camera_callback(self, msg):
-        img = np.array(msg.data)
+        bridge = CvBridge()
+        img = bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
         img = lane_detection.crop_half(img)
         self.IMAGE_WIDTH = msg.width
         self.IMAGE_HEIGHT = msg.height
